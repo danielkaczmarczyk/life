@@ -50,12 +50,26 @@ class Grid:
                 print(item, end='')
             print()
 
+    def check_neighbors(self, row, column):
+        n = 0
+        # look at all neighbors and count
+        # a neighbor is a cell that is alive
+        # implement returning true/false based on the rules
+        print(f"neighbor count for {row}:{column}: {n}") 
+        pass
+
     def update(self):
         # get a copy of the grid
         # go over every cell in the grid
         # count neighbors
-        # change cell status
+        for row, row_array in enumerate(self.grid):
+            for column, cell in enumerate(row_array):
+                print(f"{row=}, {column=}")
+                verdict = self.check_neighbors(row, column)
+                # change cell status
+                cell.status = verdict
         # return updated copy of the grid
+        pass
 
 class Game:
     def __init__(self):
@@ -65,6 +79,6 @@ class Game:
         self.grid.update()
 
 if __name__ == '__main__':
-    grid = Grid()
-    grid.print_grid()
+    game = Game()
+    game.tick()
 
