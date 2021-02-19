@@ -40,7 +40,7 @@ class Grid:
         self.grid = self.generate_grid(self.w, self.h)
 
     def generate_grid(self, w, h):
-        grid = [ [Cell() for n in range(self.h) ] for n in range(self.w)]
+        grid = [ [Cell(True) for n in range(self.h) ] for n in range(self.w)]
         return grid
 
     def print_grid(self):
@@ -50,11 +50,51 @@ class Grid:
                 print(item, end='')
             print()
 
+    def get_cell(self, row, column):
+        g = self.grid
+        try:
+            return g[row][column]
+        except IndexError:
+            return 0
+
     def check_neighbors(self, row, column):
         n = 0
+        g = self.grid
         # look at all neighbors and count
         # a neighbor is a cell that is alive
         # implement returning true/false based on the rules
+        # try getting a value for every direction
+        offsets = []
+
+        nums = [-1, 0, 1]
+        nums_idx = 0
+
+        for i in range(9):
+            if nums_idx == 3:
+                nums_idx = 0
+            if i < 3:
+                offsets.append([1, nums[nums_idx]])
+                nums_idx += 1
+            if i >= 3 and i < 6:
+                offsets.append([0, nums[nums_idx]])
+                nums_idx += 1
+            if i >= 6:
+                offsets.append([-1, nums[nums_idx]])
+                nums_idx += 1
+        
+        # calculate actual offsets
+
+        offsets.remove([0,0])
+        for offset in offsets:
+            offset[0] += row
+            offset[1] += column
+        print(f"{offsets=}")
+
+        for offset in offsets:
+            result = self.get_cell(offset[0], offset[1])
+            if result:
+                n += 1
+
         print(f"neighbor count for {row}:{column}: {n}") 
         pass
 
@@ -76,6 +116,8 @@ class Game:
         self.grid = Grid()
 
     def tick(self):
+        self.grid.print_grid()
+        print()
         self.grid.update()
 
 if __name__ == '__main__':
