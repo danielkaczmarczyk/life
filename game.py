@@ -48,12 +48,15 @@ class Grid:
 
     def print_grid(self):
         grid = self.grid
+        print(grid)
         for row in grid:
             for item in row:
                 print(item, end='')
             print()
 
     def get_cell(self, row, column):
+        if row < 0 or column < 0:
+            return None
         try:
             return self.grid[row][column]
         except IndexError:
@@ -96,6 +99,8 @@ class Grid:
         for offset in offsets:
             cell = self.get_cell(offset[0], offset[1])
             print(f"getting a cell at {offset[0]}:{offset[1]}: {cell=}")
+            if cell:
+                n += 1
 
         print(f"neighbor count for {row}:{column}: {n}") 
         pass
