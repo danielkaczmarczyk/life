@@ -37,7 +37,7 @@ class Cell:
             return 'x'
 
 class Grid:
-    def __init__(self, w=2, h=2):
+    def __init__(self, w=3, h=3):
         self.w = w
         self.h = h
         self.grid = self.generate_grid(self.w, self.h)
@@ -93,12 +93,10 @@ class Grid:
         for offset in offsets:
             offset[0] += row
             offset[1] += column
-        print(f"{offsets=}")
 
         # check for presence of cells
         for offset in offsets:
             cell = self.get_cell(offset[0], offset[1])
-            print(f"getting a cell at {offset[0]}:{offset[1]}: {cell=}")
             if cell:
                 n += 1
 
@@ -111,7 +109,6 @@ class Grid:
         # count neighbors
         for row, row_array in enumerate(self.grid):
             for column, cell in enumerate(row_array):
-                print(f"{row=}, {column=}")
                 neighbors = self.check_neighbors(row, column)
         # return updated copy of the grid
         pass
