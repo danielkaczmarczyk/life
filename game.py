@@ -25,12 +25,16 @@ class Cell:
         self.alive = alive
 
     def __repr__(self):
-        return self.alive
+        if self.alive:
+            return 'o'
+        else:
+            return 'x'
 
     def __str__(self):
         if self.alive:
             return 'o'
-        return 'x'
+        else:
+            return 'x'
 
 class Grid:
     def __init__(self, w=2, h=2):
@@ -39,7 +43,7 @@ class Grid:
         self.grid = self.generate_grid(self.w, self.h)
 
     def generate_grid(self, w, h):
-        grid = [ [Cell(False) for n in range(self.h) ] for n in range(self.w)]
+        grid = [ [Cell(True) for n in range(self.h) ] for n in range(self.w)]
         return grid
 
     def print_grid(self):
@@ -50,9 +54,8 @@ class Grid:
             print()
 
     def get_cell(self, row, column):
-        g = self.grid
         try:
-            return g[row][column]
+            return self.grid[row][column]
         except IndexError:
             return None
 
@@ -89,11 +92,10 @@ class Grid:
             offset[1] += column
         print(f"{offsets=}")
 
+        # check for presence of cells
         for offset in offsets:
             cell = self.get_cell(offset[0], offset[1])
-            if cell:
-                if cell.alive:
-                    n += 1
+            print(f"getting a cell at {offset[0]}:{offset[1]}: {cell=}")
 
         print(f"neighbor count for {row}:{column}: {n}") 
         pass
@@ -105,9 +107,7 @@ class Grid:
         for row, row_array in enumerate(self.grid):
             for column, cell in enumerate(row_array):
                 print(f"{row=}, {column=}")
-                verdict = self.check_neighbors(row, column)
-                # change cell status
-                cell.status = verdict
+                neighbors = self.check_neighbors(row, column)
         # return updated copy of the grid
         pass
 
