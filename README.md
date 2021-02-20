@@ -1,4 +1,4 @@
-# Game of Life
+# Game of Life
 
 My implementation of Game of Life in Python.
 
