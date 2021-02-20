@@ -20,39 +20,51 @@
 # iterate over grid, calculate next generation
 # display generations at an interval
 
+DEBUG = False
+
 class Cell:
-    def __init__(self, alive=False):
+    def __init__(self, alive):
         self.alive = alive
 
     def __repr__(self):
         if self.alive:
-            return 'o'
+            return "\u265E"
         else:
-            return 'x'
+            return ' '
 
     def __str__(self):
         if self.alive:
-            return 'o'
+            return "\u25A9"
         else:
-            return 'x'
+            return ' '
 
 class Grid:
-    def __init__(self, w=3, h=3):
+    def __init__(self, w=30, h=50):
         self.w = w
         self.h = h
         self.grid = self.generate_grid(self.w, self.h)
 
+    def get_random_cell(self):
+        import random
+        if random.random() < .5:
+            return Cell(True)
+        else:
+            return Cell(False)
+
     def generate_grid(self, w, h):
-        grid = [ [Cell(True) for n in range(self.h) ] for n in range(self.w)]
+        grid = [[self.get_random_cell() for n in range(self.h) ] for n in range(self.w)]
         return grid
 
     def print_grid(self):
         grid = self.grid
-        print(grid)
+        print("-" * (len(grid) + 2))
         for row in grid:
+            print("|", end='')
             for item in row:
                 print(item, end='')
+            print("|", end='')
             print()
+        print("-" * (len(grid) + 2))
 
     def get_cell(self, row, column):
         if row < 0 or column < 0:
@@ -98,31 +110,68 @@ class Grid:
         for offset in offsets:
             cell = self.get_cell(offset[0], offset[1])
             if cell:
-                n += 1
+                if cell.alive:
+                    n += 1
 
-        print(f"neighbor count for {row}:{column}: {n}") 
-        pass
+        return n
 
     def update(self):
         # get a copy of the grid
+        new_grid = self.generate_grid(self.w, self.h)
         # go over every cell in the grid
         # count neighbors
         for row, row_array in enumerate(self.grid):
             for column, cell in enumerate(row_array):
-                neighbors = self.check_neighbors(row, column)
+                cell = self.grid[row][column]
+                n = self.check_neighbors(row, column)
+                message = f"cell {row}:{column} has n of {n}"
+                if cell.alive:
+                    message += " it was found alive"
+                    if n < 2:
+                        message += " and dies of underpopulation"
+                        new_grid[row][column] = Cell(False)
+                        #cell.alive = False
+                    elif n >= 2 and n <= 3:
+                        message += " and stays stable"
+                        #cell.alive = True
+                        new_grid[row][column] = Cell(True)
+                    elif n > 3:
+                        message += " and dies of overpopulation"
+                        new_grid[row][column] = Cell(False)
+                        #cell.alive = False
+                else:
+                    message += " it was found dead"
+                    if n == 3:
+                        message += " and will be born due to reproduction"
+                        #cell.alive = True
+                        new_grid[row][column] = Cell(True)
+                    else:
+                        new_grid[row][column] = Cell(False)
+                if DEBUG:
+                    print(message)
+
         # return updated copy of the grid
-        pass
+        self.grid = new_grid
 
 class Game:
     def __init__(self):
         self.grid = Grid()
+        self.grid.print_grid()
+        self.ticks = 0
 
     def tick(self):
-        self.grid.print_grid()
         print()
+        self.ticks += 1
         self.grid.update()
+        self.grid.print_grid()
 
 if __name__ == '__main__':
+    import time
+    from os import system
     game = Game()
-    game.tick()
+
+    while True:
+        system('clear')
+        game.tick()
+        time.sleep(0.5)
 
