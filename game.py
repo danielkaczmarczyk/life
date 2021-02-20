@@ -21,26 +21,25 @@
 # display generations at an interval
 
 class Cell:
-    DEAD = 'x'
-    ALIVE = 'o'
-
-    def __init__(self, status=False):
-        if status == True:
-            self.status = self.ALIVE
-        elif status == False:
-            self.status = self.DEAD
+    def __init__(self, alive=False):
+        self.alive = alive
 
     def __repr__(self):
-        return self.status
+        return self.alive
+
+    def __str__(self):
+        if self.alive:
+            return 'o'
+        return 'x'
 
 class Grid:
-    def __init__(self, w=3, h=3):
+    def __init__(self, w=2, h=2):
         self.w = w
         self.h = h
         self.grid = self.generate_grid(self.w, self.h)
 
     def generate_grid(self, w, h):
-        grid = [ [Cell(True) for n in range(self.h) ] for n in range(self.w)]
+        grid = [ [Cell(False) for n in range(self.h) ] for n in range(self.w)]
         return grid
 
     def print_grid(self):
@@ -55,7 +54,7 @@ class Grid:
         try:
             return g[row][column]
         except IndexError:
-            return 0
+            return None
 
     def check_neighbors(self, row, column):
         n = 0
@@ -91,9 +90,10 @@ class Grid:
         print(f"{offsets=}")
 
         for offset in offsets:
-            result = self.get_cell(offset[0], offset[1])
-            if result:
-                n += 1
+            cell = self.get_cell(offset[0], offset[1])
+            if cell:
+                if cell.alive:
+                    n += 1
 
         print(f"neighbor count for {row}:{column}: {n}") 
         pass
